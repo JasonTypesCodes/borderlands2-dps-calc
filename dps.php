@@ -39,7 +39,10 @@ if($_SERVER['REQUEST_METHOD'] !== "GET"){
   if(!$a["ignoreReloadTime"]){
     $result = calculateTrueDPS(
       $result,
-      calculateSecondsUntilReload($a["magazineSize"], $a["fireRate"]),
+      calculateSecondsUntilReload(
+        calculateTrueMagazineSize($a["magazineSize"],$a["roundsPerShot"]), 
+        $a["fireRate"]
+      ),
       $a["reloadTime"]
     );
   }
