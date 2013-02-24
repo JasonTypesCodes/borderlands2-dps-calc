@@ -124,7 +124,7 @@ function getCleanInputs(){
   $result = array();
   foreach($EXPECTED_INPUTS as $key => $defaultValue){
     $cleanValue = $defaultValue;
-    if(isset($_GET[$key])){
+    if(isset($_GET[$key]) && $_GET[$key] != ""){
       if(gettype($defaultValue) == "boolean"){
         $cleanValue = asBoolean($_GET[$key]);  
       } else {
@@ -160,7 +160,7 @@ function doJSONReturn($code, $content){
   global $RETURN_CODES;
 
   header("HTTP/1.1 " . $code . " " . $RETURN_CODES[$code]);
-  header("Content-type: application/json");
+  header("Content-type: application/json; charset=UTF-8");
   echo json_encode($content);
   exit(0);
 }

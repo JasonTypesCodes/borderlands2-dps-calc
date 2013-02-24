@@ -1,0 +1,97 @@
+<html>
+
+<head>
+  <title>Borderlands 2 DPS Calc</title>
+  <script type="text/javascript" src="js/jquery-1.9.1.min.js" ></script>
+  <script type="text/javascript" src="js/dps-calc.js" ></script>
+  <link rel="stylesheet" href="css/dps-calc.css" type="text/css" media="screen" />
+</head>
+
+<body>
+  <div id="leftColumn">
+    <form id="dpsForm">
+      <table>
+        <tr>
+          <td>Name:</td> 
+          <td><input type="text" name="name"/></td>
+        </tr>
+        <tr>
+          <td>Damage:</td> 
+          <td><input type="text" name="damage"/> *</td>
+        </tr>
+        <tr>
+          <td>Accuracy:</td> 
+          <td><input type="text" name="accuracy"/></td>
+        </tr>
+        <tr>
+          <td>Fire Rate:</td> 
+          <td><input type="text" name="fireRate"/> *</td>
+        </tr>
+        <tr>
+          <td>Reload Speed:</td> 
+          <td><input type="text" name="reloadTime"/></td>
+        </tr>
+        <tr>
+          <td>Magazine Size:</td> 
+          <td><input type="text" name="magazineSize"/></td>
+        </tr>
+        <tr>
+          <td>Rounds Per Shot:</td> 
+          <td><input type="text" name="roundsPerShot"/></td>
+        </tr>
+        <tr>
+          <td>Elemental DPS:</td> 
+          <td><input type="text" name="elementalDPS"/></td>
+        </tr>
+        <tr>
+          <td>Elemental Chance:</td> 
+          <td><input type="text" name="elementalChance"/></td>
+        </tr>
+        <tr>
+          <td>Ignore Reload Time?:</td> 
+          <td>
+            <input type="checkbox" name="ignoreReloadTime_Fake"/>
+            <input type="hidden" name="ignoreReloadTime" value="false"/>
+          </td>
+        </tr>
+        <tr>
+          <td>Ignore Accuracy?:</td> 
+          <td>
+            <input type="checkbox" name="ignoreAccuracy_Fake"/>
+            <input type="hidden" name="ignoreAccuracy" value="false"/>
+          </td>
+        </tr>
+        <tr>
+          <td>Ignore Elemental?:</td> 
+          <td>
+            <input type="checkbox" name="ignoreElemental_Fake"/>
+            <input type="hidden" name="ignoreElemental" value="false"/>
+          </td>
+        </tr>
+        <tr>
+          <td></td> 
+          <td><input type="button" name="formSubmit" value="Calculate"/></td>
+        </tr>
+      </table>
+    </form>
+  </div>
+  <div id="rightColumn">
+    <ul id="resultList">
+    </ul>
+  </div>
+  <div id="clearColumns"/>
+  <div>
+    <table>
+      <tr>
+        <td>Status:</td>
+        <td id="status">Preparing...</td>
+      </tr>
+    </table>
+  </div>
+  <div>
+    <div>Messages:</div>
+    <div id="message"></div>
+  </div>
+</body>
+
+</html>

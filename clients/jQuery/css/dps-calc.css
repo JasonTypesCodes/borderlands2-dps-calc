@@ -1,0 +1,13 @@
+#leftColumn {
+	border: 1px solid gray;
+	float: left;
+}
+
+#rightColumn {
+  border: 1px solid gray;
+  float: right;
+}
+
+#clearColumns {
+  clear: both;
+}
