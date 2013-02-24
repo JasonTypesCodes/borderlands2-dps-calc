@@ -29,6 +29,11 @@ jQuery(document).ready(function(){
           var name = getInputFromName("name").val();
           addResultListItem(name, msg.result);
         }
+        if(msg.message){
+          updateMessage(msg.message);
+        } else {
+          updateMessage("");
+        }
         updateStatus("Success!");
         loadFormDefaults();
         enableForm();
