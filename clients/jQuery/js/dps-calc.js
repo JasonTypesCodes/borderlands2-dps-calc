@@ -1,10 +1,9 @@
 jQuery(document).ready(function(){
-	
+  
   var gunCounter = 1;
   var endpoint = "dps.php";
   
   disableForm();
-  setUpCheckBoxes();
   loadFormDefaults();
 
   getInputFromName("formSubmit").click(function(){
@@ -13,7 +12,6 @@ jQuery(document).ready(function(){
     disableForm();
     jQuery.ajax(endpoint,{
       url: endpoint,
-      crossDomain: true,
       type: "GET",
       data: myData,
       error: function(msg){
@@ -25,9 +23,9 @@ jQuery(document).ready(function(){
         enableForm();
       },
       success: function(msg){
-        if(msg.result){
+        if(msg.bottomLine){
           var name = getInputFromName("name").val();
-          addResultListItem(name, msg.result);
+          addResultListItem(name, msg.bottomLine);
         }
         if(msg.message){
           updateMessage(msg.message);
@@ -49,20 +47,6 @@ jQuery(document).ready(function(){
     $('#resultList').append("<li>" + name + ": " + dps + "</li>");
   }
 
-  function setUpCheckBoxes(){
-    $('[type|="checkbox"]').each(function(){
-      $(this).change(function(){
-        var myHiddenInput = getInputFromName($(this).attr("name").replace("_Fake",""));
-        
-        if($(this).is(':checked')){
-          $(myHiddenInput).val("true");
-        } else {
-          $(myHiddenInput).val("false");
-        }
-      });
-    });
-  }
-
   function disableForm(){
     $("#dpsForm :input").attr("disabled", true);
   }
@@ -71,10 +55,10 @@ jQuery(document).ready(function(){
     $("#dpsForm :input").attr("disabled", false);
   }
 
-	function autoNameGun(){
-		getInputFromName("name").val("Some Gun #" + gunCounter);
-		gunCounter++;
-	}
+  function autoNameGun(){
+    getInputFromName("name").val("Some Gun #" + gunCounter);
+    gunCounter++;
+  }
 
   function updateMessage(value){
     slideyUpdate("#message", value);
@@ -106,6 +90,4 @@ jQuery(document).ready(function(){
   function getInputFromName(name){
     return $('input[name="' + name + '"]');
   }
-
-
 });
