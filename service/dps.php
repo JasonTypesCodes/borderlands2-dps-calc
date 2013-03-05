@@ -5,17 +5,15 @@ $REQUIRED = "REQUIRED";
 
 // Input name => default value.
 $EXPECTED_INPUTS = array(
-	"accuracy" => 100,
-	"damage" => $REQUIRED,
-	"fireRate" => $REQUIRED,
-	"reloadTime" => 0,
-	"magazineSize" => 1,
-	"roundsPerShot" => 1,
-	"elementalDPS" => 0,
-	"elementalChance" => 0,
-	"ignoreReloadTime" => false,
-	"ignoreAccuracy" => false,
-	"ignoreElemental" => false,
+  "accuracy" => 100,
+  "damage" => $REQUIRED,
+  "damageMultiplier" => 1,
+  "fireRate" => $REQUIRED,
+  "reloadTime" => 0,
+  "magazineSize" => 1,
+  "roundsPerShot" => 1,
+  "elementalDPS" => 0,
+  "elementalChance" => 0,
 );
 
 $RETURN_CODES = array(
@@ -34,33 +32,42 @@ if($_SERVER['REQUEST_METHOD'] !== "GET"){
 } else {
   $a = getCleanInputs();
 
-  $result = calculateBaseDPS($a["damage"], $a["fireRate"]);
+  $results = array();
+
+  $decimalAccuracy = decimalPercent($a["accuracy"]);
+
+  $actualDamage = $a["damage"] * $a["damageMultiplier"];
+
+  $likelyElementalDPS = calculateLikelyElementalDPS(
+    $a["elementalDPS"], 
+    decimalPercent($a["elementalChance"]), 
+    $a["fireRate"]
+  );
   
-  if(!$a["ignoreReloadTime"]){
-    $result = calculateTrueDPS(
-      $result,
-      calculateSecondsUntilReload(
-        calculateTrueMagazineSize($a["magazineSize"],$a["roundsPerShot"]), 
-        $a["fireRate"]
-      ),
-      $a["reloadTime"]
-    );
-  }
+  $results["baseDPS"] = calculateBaseDPS($actualDamage, $a["fireRate"]);
 
-  if(!$a["ignoreElemental"]){
-    $result = $result + calculateLikelyElementalDPS(
-      $a["elementalDPS"], 
-      decimalPercent($a["elementalChance"]), 
+  $results["withReload"] = calculateTrueDPS(
+    $results["baseDPS"],
+    calculateSecondsUntilReload(
+      calculateTrueMagazineSize($a["magazineSize"],$a["roundsPerShot"]), 
       $a["fireRate"]
-    );
-  }
+    ),
+    $a["reloadTime"]
+  );
 
-  if(!$a["ignoreAccuracy"]){
-    $result = $result * decimalPercent($a["accuracy"]);
-  }
+  $results["withElemental"] = $results["baseDPS"] + $likelyElementalDPS;
+  
+  $results["withAccuracy"] = $results["baseDPS"] * $decimalAccuracy;
+
+  $rseults["withReloadAndElemental"] = $results["withReload"] + $likelyElementalDPS;
+  $results["withReloadAndAccuracy"] = $results["withReload"] * $decimalAccuracy;
+  $results["withElementalAndAccuracy"] = $results["withElemental"] * $decimalAccuracy;
+  $results["withReloadAndElementalAndAccuracy"] = ($results["withReload"] + $likelyElementalDPS) * $decimalAccuracy;
+
 
   doJSONReturn("200", array(
-    "result" => $result,
+    "results" => $results,
+    "bottomLine" => $results["withReloadAndElementalAndAccuracy"],
     "inputs" => $a
   ));
 }
@@ -83,8 +90,6 @@ function calculateLikelyElementalDPS($elementalDPS, $elementalChance, $fireRate)
     //you may not get the elemental DPS started, so over time it should even out to this... or something.
     return $elementalDPS * $elementalChancePerSecond;
   }
-
-
 }
 
 function calculateTrueDPS($baseDPS, $secondsUntilReload, $reloadTime){
@@ -125,35 +130,11 @@ function getCleanInputs(){
   foreach($EXPECTED_INPUTS as $key => $defaultValue){
     $cleanValue = $defaultValue;
     if(isset($_GET[$key]) && $_GET[$key] != ""){
-      if(gettype($defaultValue) == "boolean"){
-        $cleanValue = asBoolean($_GET[$key]);  
-      } else {
-        $cleanValue = doubleval($_GET[$key]);
-      }
+      $cleanValue = doubleval($_GET[$key]);
     }
     $result[$key] = $cleanValue;
   }
   return $result;
-}
-
-function asBoolean($input){
-  if(gettype($input) == "integer"){
-    if($input == 1){
-      return true;
-    } else {
-      return false;
-    }
-  } else if(gettype($input) == "string"){
-    if(strtoupper($input) == "TRUE"){
-      return true;
-    } else {
-      return false;
-    }
-  } else if(gettype($input) == "boolean"){
-    return $input;
-  } else {
-    return false;
-  }
 }
 
 function doJSONReturn($code, $content){
