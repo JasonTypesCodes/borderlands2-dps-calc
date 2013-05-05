@@ -59,7 +59,7 @@ if($_SERVER['REQUEST_METHOD'] !== "GET"){
   
   $results["withAccuracy"] = $results["baseDPS"] * $decimalAccuracy;
 
-  $rseults["withReloadAndElemental"] = $results["withReload"] + $likelyElementalDPS;
+  $results["withReloadAndElemental"] = $results["withReload"] + $likelyElementalDPS;
   $results["withReloadAndAccuracy"] = $results["withReload"] * $decimalAccuracy;
   $results["withElementalAndAccuracy"] = $results["withElemental"] * $decimalAccuracy;
   $results["withReloadAndElementalAndAccuracy"] = ($results["withReload"] + $likelyElementalDPS) * $decimalAccuracy;

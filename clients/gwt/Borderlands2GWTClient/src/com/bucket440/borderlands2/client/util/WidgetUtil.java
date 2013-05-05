@@ -2,7 +2,6 @@ package com.bucket440.borderlands2.client.util;
 
 import java.util.Iterator;
 
-import com.google.gwt.user.cellview.client.AbstractCellTable;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
