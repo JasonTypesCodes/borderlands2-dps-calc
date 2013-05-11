@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import com.bucket440.borderlands2.client.gun.Gun;
 import com.bucket440.borderlands2.client.gun.GunEventManager;
 import com.bucket440.borderlands2.client.gun.GunType;
+import com.bucket440.borderlands2.client.gun.RandomGunFactory;
 import com.bucket440.borderlands2.client.rest.CalcServiceClient;
 import com.bucket440.borderlands2.client.util.NameMaker;
 import com.google.gwt.dom.client.Style.Unit;
@@ -56,6 +57,7 @@ public class GunInputForm extends DialogBox {
 		this.add(buildForm());
 		cancelButton.addClickHandler(buildCancelHandler());
 		calculateButton.addClickHandler(buildSubmitHandler());
+		//calculateButton.addClickHandler(buildTestSubmitHandler());
 		buildWorkingDialog();
 		this.center();
 	}
@@ -172,6 +174,17 @@ public class GunInputForm extends DialogBox {
 				} else {
 					Window.alert("All fields must be numeric!");
 				}
+			}
+		};
+	}
+	
+	@SuppressWarnings("unused")
+	private ClickHandler buildTestSubmitHandler(){
+		return new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				workingDialog.hide();
+				GunEventManager.getManagerInstance().publishGunAddedEvent(RandomGunFactory.randomGun());
 			}
 		};
 	}

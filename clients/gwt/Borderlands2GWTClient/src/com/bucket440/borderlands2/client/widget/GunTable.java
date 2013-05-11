@@ -5,11 +5,16 @@ import static com.bucket440.borderlands2.client.util.WidgetUtil.maximize;
 import java.util.Comparator;
 
 import com.bucket440.borderlands2.client.gun.Gun;
+import com.bucket440.borderlands2.client.gun.GunEventManager;
+import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -33,10 +38,11 @@ public class GunTable extends VerticalPanel{
 		maximize(this);
 		
 		this.add(buildTop());
-		rebuildResults();
+		this.add(buildResults());
 	}
 	
 	public void rebuildResults(){
+		clearResults();
 		this.add(buildResults());		
 	}
 	
@@ -49,7 +55,13 @@ public class GunTable extends VerticalPanel{
 		if(doReload){
 			rebuildResults();
 		}
-		innerTable.setVisibleRange(0, myGuns.getList().size());
+		refresh();
+	}
+	
+	public void refresh(){
+		if(this.hasGuns()){
+			innerTable.setVisibleRange(0, myGuns.getList().size());
+		}
 	}
 	
 	public void removeGun(Gun gun){
@@ -107,7 +119,6 @@ public class GunTable extends VerticalPanel{
 	}
 	
 	private Widget buildResults(){
-		clearResults();
 		if(this.hasGuns()){
 			Widget table = buildInnerTable();
 			innerTable.setVisibleRange(0, myGuns.getList().size());
@@ -130,6 +141,12 @@ public class GunTable extends VerticalPanel{
 	private Widget buildInnerTable(){
 		
 		innerTable = new CellTable<Gun>();
+		
+		/*
+		 * I *hate* building out the table this way.  It is just so verbose.  Once I figure out a better way to do it, I will...
+		 * If you are reading this comment and you know of a better way... please let me know what it is.
+		 * -Jason
+		 */
 		
 		TextColumn<Gun> nameColumn = new TextColumn<Gun>(){
 			@Override
@@ -157,81 +174,111 @@ public class GunTable extends VerticalPanel{
 		
 		innerTable.addColumn(dpsColumn, "DPS");
 		
-		innerTable.addColumn(new TextColumn<Gun>(){
+		TextColumn<Gun> damageColumn = new TextColumn<Gun>(){
 			@Override
 			public String getValue(Gun gun) {
 				return String.valueOf(gun.damage);
 			}
-			
-		}, "Damage");
+		};
 		
-		innerTable.addColumn(new TextColumn<Gun>(){
+		damageColumn.setSortable(true);
+		
+		innerTable.addColumn(damageColumn, "Damage");
+		
+		TextColumn<Gun> damageMultiColumn = new TextColumn<Gun>(){
 			@Override
 			public String getValue(Gun gun) {
 				return String.valueOf(gun.damageMultiplier);
 			}
-			
-		}, "Damage Multiplier");
+		};
 		
-		innerTable.addColumn(new TextColumn<Gun>(){
+		damageMultiColumn.setSortable(true);
+		
+		innerTable.addColumn(damageMultiColumn, "Damage Multiplier");
+		
+		TextColumn<Gun> accuracyColumn = new TextColumn<Gun>(){
 			@Override
 			public String getValue(Gun gun) {
 				return String.valueOf(gun.accuracy);
 			}
-			
-		}, "Accuracy");
+		};
 		
-		innerTable.addColumn(new TextColumn<Gun>(){
+		accuracyColumn.setSortable(true);
+		
+		innerTable.addColumn(accuracyColumn, "Accuracy");
+		
+		TextColumn<Gun> fireRateColumn = new TextColumn<Gun>(){
 			@Override
 			public String getValue(Gun gun) {
 				return String.valueOf(gun.fireRate);
 			}
-			
-		}, "Fire Rate");
+		};
 		
-		innerTable.addColumn(new TextColumn<Gun>(){
+		fireRateColumn.setSortable(true);
+		
+		innerTable.addColumn(fireRateColumn, "Fire Rate");
+		
+		TextColumn<Gun> reloadTimeColumn = new TextColumn<Gun>(){
 			@Override
 			public String getValue(Gun gun) {
 				return String.valueOf(gun.reloadTime);
 			}
-			
-		}, "Reload Time");
+		};
 		
-		innerTable.addColumn(new TextColumn<Gun>(){
+		reloadTimeColumn.setSortable(true);
+		
+		innerTable.addColumn(reloadTimeColumn, "Reload Time");
+		
+		TextColumn<Gun> magazineSizeColumn = new TextColumn<Gun>(){
 			@Override
 			public String getValue(Gun gun) {
 				return String.valueOf(gun.magazineSize);
 			}
-			
-		}, "Magazine Size");
+		};
 		
-		innerTable.addColumn(new TextColumn<Gun>(){
+		magazineSizeColumn.setSortable(true);
+		
+		innerTable.addColumn(magazineSizeColumn, "Magazine Size");
+		
+		TextColumn<Gun> roundsPerShotColumn = new TextColumn<Gun>(){
 			@Override
 			public String getValue(Gun gun) {
 				return String.valueOf(gun.roundsPerShot);
 			}
-			
-		}, "Rounds Per Shot");
+		};
 		
-		innerTable.addColumn(new TextColumn<Gun>(){
+		roundsPerShotColumn.setSortable(true);
+		
+		innerTable.addColumn(roundsPerShotColumn, "Rounds Per Shot");
+		
+		TextColumn<Gun> elementalDPSColumn = new TextColumn<Gun>(){
 			@Override
 			public String getValue(Gun gun) {
 				return String.valueOf(gun.elementalDPS);
 			}
-			
-		}, "Elemental DPS");
+		};
 		
-		innerTable.addColumn(new TextColumn<Gun>(){
+		elementalDPSColumn.setSortable(true);
+		
+		innerTable.addColumn(elementalDPSColumn, "Elemental DPS");
+		
+		TextColumn<Gun> elementalChanceColumn = new TextColumn<Gun>(){
 			@Override
 			public String getValue(Gun gun) {
 				return String.valueOf(gun.elementalChance);
 			}
-			
-		}, "Elemental Chance");
+		};
+		
+		elementalChanceColumn.setSortable(true);
+		
+		innerTable.addColumn(elementalChanceColumn, "Elemental Chance");
+		
+		innerTable.addColumn(getDeleteButtonColumn(), "Delete");
 		
 		myGuns.addDataDisplay(innerTable);
 		
 		sortHandler = new ListHandler<Gun>(myGuns.getList());
+		
 		sortHandler.setComparator(nameColumn, new Comparator<Gun>(){
 			@Override
 			public int compare(Gun o1, Gun o2) {
@@ -246,9 +293,96 @@ public class GunTable extends VerticalPanel{
 			}
 		});
 		
-		innerTable.getColumnSortList().push(nameColumn);
+		sortHandler.setComparator(damageColumn, new Comparator<Gun>(){
+			@Override
+			public int compare(Gun o1, Gun o2) {
+				return o1.damage.compareTo(o2.damage);
+			}
+		});
+		
+		sortHandler.setComparator(damageMultiColumn, new Comparator<Gun>(){
+			@Override
+			public int compare(Gun o1, Gun o2) {
+				return o1.damageMultiplier.compareTo(o2.damageMultiplier);
+			}
+		});
+		
+		sortHandler.setComparator(accuracyColumn, new Comparator<Gun>(){
+			@Override
+			public int compare(Gun o1, Gun o2) {
+				return o1.accuracy.compareTo(o2.accuracy);
+			}
+		});
+		
+		sortHandler.setComparator(fireRateColumn, new Comparator<Gun>(){
+			@Override
+			public int compare(Gun o1, Gun o2) {
+				return o1.fireRate.compareTo(o2.fireRate);
+			}
+		});
+		
+		sortHandler.setComparator(reloadTimeColumn, new Comparator<Gun>(){
+			@Override
+			public int compare(Gun o1, Gun o2) {
+				return o1.reloadTime.compareTo(o2.reloadTime);
+			}
+		});
+		
+		sortHandler.setComparator(magazineSizeColumn, new Comparator<Gun>(){
+			@Override
+			public int compare(Gun o1, Gun o2) {
+				return o1.magazineSize.compareTo(o2.magazineSize);
+			}
+		});
+		
+		sortHandler.setComparator(roundsPerShotColumn, new Comparator<Gun>(){
+			@Override
+			public int compare(Gun o1, Gun o2) {
+				return o1.roundsPerShot.compareTo(o2.roundsPerShot);
+			}
+		});
+		
+		sortHandler.setComparator(elementalDPSColumn, new Comparator<Gun>(){
+			@Override
+			public int compare(Gun o1, Gun o2) {
+				return o1.elementalDPS.compareTo(o2.elementalDPS);
+			}
+		});
+		
+		sortHandler.setComparator(elementalChanceColumn, new Comparator<Gun>(){
+			@Override
+			public int compare(Gun o1, Gun o2) {
+				return o1.elementalChance.compareTo(o2.elementalChance);
+			}
+		});
+		
+		dpsColumn.setDefaultSortAscending(false);
 		innerTable.getColumnSortList().push(dpsColumn);
 		
+		innerTable.addColumnSortHandler(sortHandler);
+		
 		return innerTable;
+	}
+	
+	private Column <Gun, String> getDeleteButtonColumn(){
+		ButtonCell deleteCell = new ButtonCell();
+		Column<Gun, String> deleteColumn = new Column<Gun, String>(deleteCell){
+			@Override
+			public String getValue(Gun object) {
+				return "Delete";
+			}
+			
+		};
+		
+		deleteColumn.setFieldUpdater(new FieldUpdater<Gun, String>(){
+			@Override
+			public void update(int index, Gun object, String value) {
+				if(Window.confirm("Are you sure you want to delete " + object.name + "?")){
+					GunEventManager.getManagerInstance().publishGunRemovedEvent(object);
+				}
+			}
+		});
+		
+		return deleteColumn;
 	}
 }
