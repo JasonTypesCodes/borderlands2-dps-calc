@@ -3,3 +3,4 @@ clients/gwt/Borderlands2GWTClient/gwt-unitCache/*
 clients/gwt/Borderlands2GWTClient/war/borderlands2gwtclient/*
 clients/gwt/Borderlands2GWTClient/war/WEB-INF/classes/*
 clients/gwt/Borderlands2GWTClient/war/WEB-INF/deploy/*
+clients/gwt/Borderlands2GWTClient/.gwt/*
