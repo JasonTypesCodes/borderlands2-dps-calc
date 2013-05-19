@@ -17,4 +17,16 @@ public class GunTypeDropDown extends ListBox{
 		String name = getValue(getSelectedIndex());
 		return GunType.valueOf(name);
 	}
+	
+	public void setSelectedType(GunType type){
+		int index = 0;
+		GunType[] allTypes = GunType.values();
+		for(int x = 0; x < allTypes.length; x++){
+			if(allTypes[x].equals(type)){
+				index = x;
+				break;
+			}
+		}
+		setSelectedIndex(index);
+	}
 }

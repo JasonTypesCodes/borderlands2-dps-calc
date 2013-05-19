@@ -12,6 +12,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
@@ -43,7 +44,8 @@ public class GunTable extends VerticalPanel{
 	
 	public void rebuildResults(){
 		clearResults();
-		this.add(buildResults());		
+		this.add(buildResults());
+		forceTableSort();
 	}
 	
 	public void addGun(Gun newGun) {
@@ -56,12 +58,20 @@ public class GunTable extends VerticalPanel{
 			rebuildResults();
 		}
 		refresh();
+		forceTableSort();
+	}
+	
+	public void forceTableSort(){
+		if(innerTable != null){
+			ColumnSortEvent.fire(innerTable, innerTable.getColumnSortList());			
+		}
 	}
 	
 	public void refresh(){
 		if(this.hasGuns()){
 			innerTable.setVisibleRange(0, myGuns.getList().size());
 		}
+		forceTableSort();
 	}
 	
 	public void removeGun(Gun gun){
@@ -273,6 +283,7 @@ public class GunTable extends VerticalPanel{
 		
 		innerTable.addColumn(elementalChanceColumn, "Elemental Chance");
 		
+		innerTable.addColumn(getEditButtonColumn(), "Edit");
 		innerTable.addColumn(getDeleteButtonColumn(), "Delete");
 		
 		myGuns.addDataDisplay(innerTable);
@@ -384,5 +395,34 @@ public class GunTable extends VerticalPanel{
 		});
 		
 		return deleteColumn;
+	}
+	
+	private Column <Gun, String> getEditButtonColumn(){
+		ButtonCell editCell = new ButtonCell();
+		Column<Gun, String> editColumn = new Column<Gun, String>(editCell){
+			@Override
+			public String getValue(Gun object) {
+				return "Edit";
+			}
+			
+		};
+		
+		editColumn.setFieldUpdater(new FieldUpdater<Gun, String>(){
+			@Override
+			public void update(int index, Gun object, String value) {
+				final Gun finalGun = object;
+				GunEventManager.getManagerInstance().publishGunRemovedEvent(finalGun);
+				GunInputForm myForm = new GunInputForm(finalGun);
+				myForm.setOnCancel(new GunInputForm.OnCancel() {
+					@Override
+					public void onCancel() {
+						GunEventManager.getManagerInstance().publishGunAddedEvent(finalGun);
+					}
+				});
+				myForm.show();
+			}
+		});
+		
+		return editColumn;
 	}
 }

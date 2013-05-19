@@ -34,6 +34,7 @@ public class GunInputForm extends DialogBox {
 	private GunInputForm me;
 	private CalcServiceClient client;
 	private DialogBox workingDialog;
+	private OnCancel onCancel;
 	
 	private static final String NAME = "Name";
 	private static final String DAMAGE = "Damage";
@@ -62,6 +63,16 @@ public class GunInputForm extends DialogBox {
 		this.center();
 	}
 	
+	public GunInputForm(Gun startingValues){
+		this();
+		fillInValuesFromGun(startingValues);
+		calculateButton.setText("Re-Calculate");
+	}
+	
+	public void setOnCancel(OnCancel onCancel){
+		this.onCancel = onCancel;
+	}
+	
 	private void buildWorkingDialog(){
 		workingDialog = new DialogBox();
 		workingDialog.setAnimationEnabled(true);
@@ -74,6 +85,20 @@ public class GunInputForm extends DialogBox {
 		workingDialog.add(calculating);
 		workingDialog.center();
 		workingDialog.hide();
+	}
+	
+	private void fillInValuesFromGun(Gun gun){
+		gunTypeDropDown.setSelectedType(gun.type);
+		((TextBox)myFields.get(NAME)).setValue(gun.name);
+		((DoubleBox)myFields.get(DAMAGE)).setValue(gun.damage);
+		((IntegerBox)myFields.get(DAMAGE_MULTIPLIER)).setValue(gun.damageMultiplier);
+		((DoubleBox)myFields.get(ACCURACY)).setValue(gun.accuracy);
+		((DoubleBox)myFields.get(FIRE_RATE)).setValue(gun.fireRate);
+		((DoubleBox)myFields.get(RELOAD_SPEED)).setValue(gun.reloadTime);
+		((IntegerBox)myFields.get(MAGAZINE_SIZE)).setValue(gun.magazineSize);
+		((IntegerBox)myFields.get(ROUNDS_PER_SHOT)).setValue(gun.roundsPerShot);
+		((DoubleBox)myFields.get(ELEMENTAL_DPS)).setValue(gun.elementalDPS);
+		((DoubleBox)myFields.get(ELEMENTAL_CHANCE)).setValue(gun.elementalChance);
 	}
 	
 	private Widget buildForm(){
@@ -193,6 +218,9 @@ public class GunInputForm extends DialogBox {
 		return new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
+				if(onCancel != null){
+					onCancel.onCancel();
+				}
 				me.clear();
 				me.hide();
 				me = null;
@@ -222,5 +250,9 @@ public class GunInputForm extends DialogBox {
 				Window.alert("Error! " + errorMessage);
 			}
 		};
+	}
+	
+	public interface OnCancel{
+		public void onCancel();
 	}
 }
