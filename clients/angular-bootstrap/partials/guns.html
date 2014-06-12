@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 page-header">
+      <h1>Borderlands 2 DPS Calculator</h1>        
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-xs-10">
+      <select ng-model="activeType" ng-options="type for type in types" class="form-control"></select>        
+    </div>
+    <div class="col-xs-2">
+      <button type="button" class="btn btn-success" ng-click="loadAddForm()">
+        <span class="glyphicon glyphicon-plus"></span> Add Gun
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <alert ng-model="errorMsg" ng-if="errorMsg !== ''" type="danger" />
+    </div>
+  </div>        
+  <div class="row">
+    <div class="col-xs-12">
+      <alert ng-if="guns.length === 0">
+        <span class="glyphicon glyphicon-info-sign"></span> No '{{activeType}}' items available. <a ui-sref="add">Add one!</a>
+      </alert>
+      <accordion close-others="true">
+        <accordion-group ng-repeat="aGun in guns">
+          <accordion-heading>
+            <div class="col-xs-6">{{aGun.name}}</div>
+            <div class="col-xs-6">DPS: {{aGun.results.withReloadAndElementalAndAccuracy}}</div>
+          </accordion-heading>
+            <div class="col-xs-12">
+              <div class="row" ng-repeat="(prop, value) in aGun.inputs">
+                <div class="col-xs-6">
+                  {{prop}} : 
+                </div>
+                <div class="col-xs-6">
+                  {{value}}
+                </div>
+              </div>
+            </div>
+        </accordion-group>
+      </accordion>
+    </div>
+  </div>
+</div>

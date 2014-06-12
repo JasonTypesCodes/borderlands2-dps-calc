@@ -1,0 +1,15 @@
+
+.animate-slide.ng-enter {
+  -webkit-animation: 0.3s slideInLeft;
+  animation: 0.3s slideInLeft;
+}
+
+.animate-slide.ng-leave {
+  -webkit-animation: 0.4s slideOutRight;
+  animation: 0.4s slideOutRight;
+}
+
+.alert.ng-enter {
+  -webkit-animation: 0.5s bounce;
+  animation: 0.5s bounce;
+}
