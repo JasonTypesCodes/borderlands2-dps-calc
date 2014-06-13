@@ -6,10 +6,10 @@
   </div>
   
   <div class="row">
-    <div class="col-xs-10">
+    <div class="col-xs-7">
       <select ng-model="activeType" ng-options="type for type in types" class="form-control"></select>        
     </div>
-    <div class="col-xs-2">
+    <div class="col-xs-5">
       <button type="button" class="btn btn-success" ng-click="loadAddForm()">
         <span class="glyphicon glyphicon-plus"></span> Add Gun
       </button>
@@ -26,19 +26,29 @@
         <span class="glyphicon glyphicon-info-sign"></span> No '{{activeType}}' items available. <a ui-sref="add">Add one!</a>
       </alert>
       <accordion close-others="true">
-        <accordion-group ng-repeat="aGun in guns">
+        <accordion-group ng-repeat="aGun in guns | orderBy:displayableDPS">
           <accordion-heading>
-            <div class="col-xs-6">{{aGun.name}}</div>
-            <div class="col-xs-6">DPS: {{aGun.results.withReloadAndElementalAndAccuracy}}</div>
+            <div class="row">
+              <div class="col-xs-6">{{aGun.name}}</div>
+              <div class="col-xs-6">DPS: {{displayableDPS(aGun)}}</div>
+            </div>
           </accordion-heading>
-            <div class="col-xs-12">
-              <div class="row" ng-repeat="(prop, value) in aGun.inputs">
-                <div class="col-xs-6">
-                  {{prop}} : 
-                </div>
-                <div class="col-xs-6">
-                  {{value}}
-                </div>
+            <div class="row">
+              <div class="col-xs-6">
+              
+              </div>
+              <div class="col-xs-6">
+                <button type="button" class="btn btn-sm btn-primary" ng-click="deleteGun(aGun.id)">
+                  <span class="glyphicon glyphicon-trash"></span>
+                </button>
+              </div>
+            </div>
+            <div class="row" ng-repeat="(prop, value) in aGun.inputs">
+              <div class="col-xs-6">
+                {{prop}} : 
+              </div>
+              <div class="col-xs-6">
+                {{value}}
               </div>
             </div>
         </accordion-group>

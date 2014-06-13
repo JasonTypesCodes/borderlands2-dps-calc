@@ -15,13 +15,18 @@ app.config(function($stateProvider, $urlRouterProvider){
       url: '/add',
       controller: 'AddController',
       templateUrl: 'partials/add.html'
+    })
+    .state('edit',{
+      url: '/edit/{id}',
+      controller: 'AddController',
+      templateUrl: 'partials/add.html'
     });
 });
 
 app.factory('b2cGunService', function($http){
   var svc = {};
   
-  var endpoint = 'http://localhost:8080/service/dps.php';
+  var endpoint = 'http://localhost/borderlands2-dps-calc/service/dps.php';
   
   svc.getDefaults = function(success, error){
     $http.get(endpoint).success(function(data, status){
@@ -44,6 +49,7 @@ app.factory('b2cGunService', function($http){
     $http.get(endpoint + encodedParams)
       .success(function(data){
         var result = {};
+        result.id = gun.id;
         result.name = gun.name;
         result.type = gun.type;
         result.inputs = data.inputs;
@@ -102,9 +108,51 @@ app.factory('b2cStateService', function($log, b2cGunService){
     return [];
   }
   
-  svc.addGun = function(newGun){
-    svc.getGunsForType(newGun.type).push(newGun);
-  }
+  svc.getGun = function(id){
+    id = parseInt(id, 10);
+    for(var x = 0; x < myGuns.length; x++){
+      for(var y = 0; y < myGuns[x].guns.length; y++){
+        if(myGuns[x].guns[y].id === id){
+          return myGuns[x].guns[y];
+        }
+      }
+    }
+    
+    return {id: id};
+  };
+  
+  svc.saveGun = function(newGun){
+    var gunsForType = svc.getGunsForType(newGun.type);
+    var found = false;
+    for(var x = 0; x < gunsForType.length; x++){
+      if(gunsForType[x].id === newGun.id){
+        gunsForType[x] = newGun;
+        found = true;
+      }
+    }
+    
+    if(!found){
+      gunsForType.push(newGun); 
+    }
+  };
+  
+  svc.removeGun = function(id){
+    for(var x = 0; x < myGuns.length; x++){     
+      for(var y = 0; y < myGuns[x].guns.length; y++){
+        if(myGuns[x].guns[y].id === id){
+          myGuns[x].guns.splice(y,1);
+        }
+      }
+    }
+  };
+  
+  svc.getDisplayableDPS = function(someGun){
+    if(someGun && someGun.results){
+      return someGun.results.withReloadAndElementalAndAccuracy;    
+    } else {
+      return -1;
+    }
+  };
   
   svc.inputRequired = function(inputName){
     return requiredInputs.indexOf(inputName) >= 0;
@@ -150,6 +198,24 @@ app.factory('b2cStateService', function($log, b2cGunService){
   return svc;
 });
 
+app.factory('b2cIdGenerator', function(){
+  var svc = {}
+  
+  var lastId = 0;
+  
+  svc.getNextId = function(){
+    return ++lastId;
+  };
+  
+  svc.registerId = function(id){
+    if(id > lastId){
+      lastId = id;
+    }
+  };
+  
+  return svc;
+});
+
 app.factory('b2cNameMaker', function(){
   var svc = {};
   
@@ -165,7 +231,7 @@ app.factory('b2cNameMaker', function(){
 });
 
 
-app.controller('MainController', function($scope, $state, b2cStateService){
+app.controller('MainController', function($scope, $state, $log, b2cStateService){
   
   $scope.errorMsg = '';
   $scope.activeType = b2cStateService.getActiveType();
@@ -180,11 +246,19 @@ app.controller('MainController', function($scope, $state, b2cStateService){
     $state.go('add');
   };
   
+  $scope.displayableDPS = function(someGun){
+    return b2cStateService.getDisplayableDPS(someGun);
+  };
+  
+  $scope.deleteGun = function(id){
+    b2cStateService.removeGun(id);
+  };
+  
   $scope.types = b2cStateService.getTypes();
   
 });
 
-app.controller('AddController', function($scope, $state, $log, b2cStateService, b2cGunService, b2cNameMaker){
+app.controller('AddController', function($scope, $state, $stateParams, $log, b2cStateService, b2cGunService, b2cNameMaker, b2cIdGenerator){
   if(!b2cStateService.defaultsLoaded()){
     $state.go('guns');
   }
@@ -214,7 +288,6 @@ app.controller('AddController', function($scope, $state, $log, b2cStateService, 
     buildInputObject('elementalChance','Elemental Chance','number')
   ];
   
-  $scope.newGun = {};
   
   $scope.goBack = function(){
     $state.go('guns');
@@ -225,7 +298,7 @@ app.controller('AddController', function($scope, $state, $log, b2cStateService, 
       $scope.newGun,
       function(data){
         b2cStateService.setActiveType(data.type);
-        b2cStateService.addGun(data);
+        b2cStateService.saveGun(data);
         $state.go('guns');
       },
       function(error){
@@ -234,6 +307,14 @@ app.controller('AddController', function($scope, $state, $log, b2cStateService, 
     );
   };
   
-  $scope.newGun.type = b2cStateService.getActiveType();
-  $scope.newGun.name = b2cNameMaker.getUniqueName();
+  $log.info($stateParams);
+  
+  if($stateParams.id){
+    $scope.newGun = b2cStateService.getGun($stateParams.id);
+  } else {
+    $scope.newGun = {};
+    $scope.newGun.id = b2cIdGenerator.getNextId();
+    $scope.newGun.type = b2cStateService.getActiveType();
+    $scope.newGun.name = b2cNameMaker.getUniqueName();  
+  }
 });
