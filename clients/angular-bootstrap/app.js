@@ -26,7 +26,7 @@ app.config(function($stateProvider, $urlRouterProvider){
 app.factory('b2cGunService', function($http){
   var svc = {};
   
-  var endpoint = 'http://localhost/borderlands2-dps-calc/service/dps.php';
+  var endpoint = 'http://localhost:8080/service/dps.php';
   
   svc.getDefaults = function(success, error){
     $http.get(endpoint).success(function(data, status){
@@ -52,7 +52,9 @@ app.factory('b2cGunService', function($http){
         result.id = gun.id;
         result.name = gun.name;
         result.type = gun.type;
-        result.inputs = data.inputs;
+        for(var item in data.inputs){
+          result[item] = data.inputs[item];
+        }
         result.results = data.results;
         
         success(result);
@@ -249,6 +251,10 @@ app.controller('MainController', function($scope, $state, $log, b2cStateService)
   $scope.displayableDPS = function(someGun){
     return b2cStateService.getDisplayableDPS(someGun);
   };
+  
+  $scope.editGun = function(id){
+    $state.go('edit', {id: id});
+  }
   
   $scope.deleteGun = function(id){
     b2cStateService.removeGun(id);

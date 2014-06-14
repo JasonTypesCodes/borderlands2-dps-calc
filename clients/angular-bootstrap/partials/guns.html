@@ -41,9 +41,12 @@
                 <button type="button" class="btn btn-sm btn-primary" ng-click="deleteGun(aGun.id)">
                   <span class="glyphicon glyphicon-trash"></span>
                 </button>
+                <button type="button" class="btn btn-sm btn-primary" ng-click="editGun(aGun.id)">
+                  <span class="glyphicon glyphicon-edit"></span>
+                </button>
               </div>
             </div>
-            <div class="row" ng-repeat="(prop, value) in aGun.inputs">
+            <div class="row" ng-repeat="(prop, value) in aGun">
               <div class="col-xs-6">
                 {{prop}} : 
               </div>
