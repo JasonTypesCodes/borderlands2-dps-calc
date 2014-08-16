@@ -1,0 +1,25 @@
+{
+  "name": "angular-bootstrap",
+  "version": "0.0.0",
+  "description": "Playing with AngularJS and Bootstrap",
+  "main": "app/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VoltiSubito/borderlands2-dps-calc"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VoltiSubito/borderlands2-dps-calc/issues"
+  },
+  "homepage": "https://github.com/VoltiSubito/borderlands2-dps-calc",
+  "devDependencies": {
+    "del": "^0.1.2",
+    "gulp": "^3.8.7",
+    "gulp-csslint": "^0.1.5",
+    "gulp-jshint": "^1.8.4"
+  }
+}
