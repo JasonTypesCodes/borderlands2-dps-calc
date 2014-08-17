@@ -7,3 +7,5 @@ clients/gwt/Borderlands2GWTClient/.gwt/*
 
 #Ignores for the AnguarJS Client
 clients/angular-bootstrap/node_modules/*
+clients/angular-bootstrap/bower_components/*
+clients/angular-bootstrap/build/*
