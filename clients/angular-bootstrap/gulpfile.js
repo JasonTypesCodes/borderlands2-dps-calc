@@ -14,6 +14,7 @@ var karmaConfig = {
     'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
     'bower_components/angular-ui-router/release/angular-ui-router.js',
     'app/app.js',
+    'app/**/*.js',
     'app/**/*.test.js'
   ],
   exclude: [],
