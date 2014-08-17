@@ -26,8 +26,30 @@ var karmaConfig = {
   singleRun: true
 };
 
+function copyResources(){
+  return gulp.src('bower_components/**/*.*')
+    .pipe(gulp.dest('build/ext'));
+}
+
+function copyApp(){
+  return gulp.src(['app/**/*.*', '!app/**/*.test.js'])
+    .pipe(gulp.dest('build')); 
+}
+
+gulp.task('copy-resources', function(){
+  return copyResources();
+});
+
+gulp.task('copy-app', function(){
+  return copyApp();
+});
+
+gulp.task('clean', function(cb){
+  del(['build'], cb);
+});
+
 gulp.task('jshint', function(){
-  return gulp.src('./app/app.js')
+  return gulp.src('./app/**/*.js')
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('default', {verbose: true}))
     .pipe(jshint.reporter('fail'));
@@ -36,3 +58,15 @@ gulp.task('jshint', function(){
 gulp.task('karma', function(done){
   karma.start(karmaConfig, done);
 });
+
+gulp.task('lint', ['jshint']);
+gulp.task('test', ['lint', 'karma']);
+
+gulp.task('build', function(){
+  del(['build'], function(){
+    copyResources();
+    copyApp();
+  })
+});
+
+gulp.task('default', ['build']);
