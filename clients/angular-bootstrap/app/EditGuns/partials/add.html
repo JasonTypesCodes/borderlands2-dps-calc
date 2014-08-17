@@ -28,6 +28,7 @@
               <label class="control-label col-xs-2">{{input.displayName}} {{input.required ? '*' : ''}}</label>
               <div class="col-xs-10">
                 <input 
+                  id="{{'newGun_' + input.name}}"
                   type="{{input.type}}" 
                   ng-model="newGun[input.name]"
                   class="form-control"
