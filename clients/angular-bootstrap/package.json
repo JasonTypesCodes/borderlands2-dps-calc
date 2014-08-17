@@ -21,9 +21,12 @@
     "gulp": "^3.8.7",
     "gulp-csslint": "^0.1.5",
     "gulp-jshint": "^1.8.4",
+    "gulp-protractor": "0.0.11",
     "karma": "^0.12.21",
     "karma-firefox-launcher": "^0.1.3",
     "karma-jasmine": "^0.1.5",
-    "karma-phantomjs-launcher": "^0.1.4"
+    "karma-phantomjs-launcher": "^0.1.4",
+    "protractor": "^1.0.0",
+    "selenium-server-standalone-jar": "^2.40.0"
   }
 }

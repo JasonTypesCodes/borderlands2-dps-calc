@@ -2,6 +2,7 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     csslint = require('gulp-csslint'),
     karma = require('karma').server,
+    protractor = require('gulp-protractor').protractor,
     del = require('del');
     
 var karmaConfig = {
@@ -36,6 +37,15 @@ function copyApp(){
   return gulp.src(['app/**/*.*', '!app/**/*.test.js'])
     .pipe(gulp.dest('build')); 
 }
+
+gulp.task('protractor', function(){
+  gulp.src(['e2e_tests/**/*.js'])
+    .pipe(protractor({
+      configFile: 'protractor.conf.js',
+      args: ['--baseUrl', 'http://127.0.0.1:8080']
+    }))
+    .on('error', function(e) { throw e });
+});
 
 gulp.task('copy-resources', function(){
   return copyResources();
