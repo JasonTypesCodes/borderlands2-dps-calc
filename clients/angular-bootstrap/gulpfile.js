@@ -14,6 +14,8 @@ var karmaConfig = {
     'bower_components/angular-animate/angular-animate.js',
     'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
     'bower_components/angular-ui-router/release/angular-ui-router.js',
+    'bower_components/sinonjs/sinon.js',
+    'bower_components/jasmine-sinon/lib/jasmine-sinon.js',
     'app/app.js',
     'app/**/*.js',
     'app/**/*.test.js'
@@ -24,7 +26,8 @@ var karmaConfig = {
   port: 9876,
   colors: true,
   autoWatch: false,
-  browsers: ['Firefox','PhantomJS'],
+  //browsers: ['Firefox','PhantomJS'],
+  browsers: ['PhantomJS'],
   singleRun: true
 };
 

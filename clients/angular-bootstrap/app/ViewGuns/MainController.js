@@ -1,6 +1,6 @@
 (function(){
   
-  app.controller('MainController', function($scope, $state, $log, b2cStateService){
+  app.controller('MainController', function($scope, $state, b2cStateService){
     
     $scope.errorMsg = '';
     $scope.activeType = b2cStateService.getActiveType();
