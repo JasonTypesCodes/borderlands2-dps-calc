@@ -15,13 +15,13 @@
     "tests"
   ],
   "dependencies": {
-    "angular-animate": "~1.2.22",
+    "angular-animate": "~1.3.15",
     "angular-ui-router": "~0.2.10",
-    "angular": "~1.2.22",
+    "angular": "~1.3.15",
     "animate.css": "~3.1.1",
     "bootswatch": "~3.2.0",
     "angular-bootstrap": "~0.11.0",
-    "angular-mocks": "~1.2.22"
+    "angular-mocks": "~1.3.15"
   },
   "devDependencies": {
     "jasmine-sinon": "~0.4.0"

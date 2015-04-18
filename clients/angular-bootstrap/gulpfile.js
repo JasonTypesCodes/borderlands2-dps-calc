@@ -3,7 +3,8 @@ var gulp = require('gulp'),
     csslint = require('gulp-csslint'),
     karma = require('karma').server,
     protractor = require('gulp-protractor').protractor,
-    del = require('del');
+    del = require('del'),
+    livereload = require('gulp-livereload');
     
 var karmaConfig = {
   basePath: '',
@@ -76,11 +77,21 @@ gulp.task('karma', function(done){
 gulp.task('lint', ['jshint']);
 gulp.task('test', ['lint', 'karma']);
 
-gulp.task('build', function(){
+gulp.task('build', ['lint', 'test'], function(){
   del(['build'], function(){
     copyResources();
     copyApp();
   })
 });
 
-gulp.task('default', ['build']);
+gulp.task('watch', ['build'], function(){
+    livereload.listen();
+    
+    gulp.watch(['app/**/*.*'], ['build']);
+    
+    gulp.watch(['build/**/*.*']).on('change', livereload.changed);
+    
+    
+});
+
+gulp.task('default', ['watch']);
