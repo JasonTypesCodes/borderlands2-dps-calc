@@ -2,8 +2,7 @@
   app.factory('b2cGunService', function($http){
     var svc = {};
     
-    //var endpoint = 'http://localhost:8080/service/dps.php';
-    var endpoint = 'http://www.bucket440.com/borderlands2/dps.php';
+    var endpoint = 'http://bucket440.com/borderlands2/dps.php';
     
     svc.getDefaults = function(success, error){
       $http.get(endpoint).success(function(data, status){

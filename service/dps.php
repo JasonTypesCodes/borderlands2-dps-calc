@@ -22,7 +22,13 @@ $RETURN_CODES = array(
   "405" => "Method Not Allowed",
 );
 
-if($_SERVER['REQUEST_METHOD'] !== "GET"){
+if($_SERVER['REQUEST_METHOD'] === "OPTIONS"){
+  
+  header("HTTP/1.1 200 OK");
+  addCorsHeaders();
+  exit(0);
+
+} else if($_SERVER['REQUEST_METHOD'] !== "GET"){
   doJSONReturn("405", array("message" => "Method " . $_SERVER['REQUEST_METHOD'] . " not allowed."));
 } else if(!requiredInputSupplied()){
   doJSONReturn("400", array(
@@ -142,8 +148,15 @@ function doJSONReturn($code, $content){
 
   header("HTTP/1.1 " . $code . " " . $RETURN_CODES[$code]);
   header("Content-type: application/json; charset=UTF-8");
+  addCorsHeaders();
   echo json_encode($content);
   exit(0);
+}
+
+function addCorsHeaders(){
+  header("Access-Control-Allow-Origin: *");
+  header("Access-Control-Allow-Methods: OPTIONS, GET");
+  header("Access-Control-Max-Age: 2628000");
 }
 
 function requiredInputSupplied(){
