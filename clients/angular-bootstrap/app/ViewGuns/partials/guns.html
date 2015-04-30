@@ -1,11 +1,13 @@
 <div class="row">
-  <div class="col-sm-7">
-    <select ng-model="activeType" ng-options="type for type in types" class="form-control"></select>        
-  </div>
-  <div class="col-sm-5">
-    <button type="button" class="btn btn-success btn-md pull-right" ng-click="loadAddForm()">
-      <span class="glyphicon glyphicon-plus"></span> Add Gun
-    </button>
+  <div class="col-xs-12">
+    <div class="input-group">
+      <select ng-model="activeType" ng-options="type for type in types" class="form-control"></select>        
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-success" ng-click="loadAddForm()">
+          <span class="glyphicon glyphicon-plus"></span> Add
+        </button>      
+      </span>
+    </div>
   </div>
 </div>
 <div class="row">
