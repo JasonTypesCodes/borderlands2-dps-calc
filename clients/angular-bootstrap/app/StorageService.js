@@ -26,8 +26,6 @@
     svc.get = function(key, defaultResult){
       var result = svc.isAvailable ? localStorage.getItem(key) : cache[key];
       
-      console.log(result);
-      
       try{
         return result ? JSON.parse(result) : defaultResult;
       } catch(e) {
