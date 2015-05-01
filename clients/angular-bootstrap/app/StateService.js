@@ -1,16 +1,18 @@
 (function(){
   
-  app.factory('b2cStateService', function($log, b2cGunService){
+  app.factory('b2cStateService', function($log, b2cGunService, b2cStorageService){
     var svc = {};
     
-    var myGuns = [
+    var GUN_KEY = 'GUNS';
+    
+    var myGuns = b2cStorageService.get(GUN_KEY, [
       {type: 'Pistol', guns: []},
       {type: 'Assault Rifle', guns: []},
       {type: 'Shotgun', guns: []},
       {type: 'Sniper Rifle', guns: []},
       {type: 'Submachine', guns: []},
       {type: 'Rocket Launcher', guns: []}
-    ];
+    ]);
     
     var types = [];
     var activeType = 'Pistol';
@@ -72,6 +74,8 @@
       if(!found){
         gunsForType.push(newGun); 
       }
+      
+      b2cStorageService.save(GUN_KEY, myGuns);
     };
     
     svc.removeGun = function(id){
@@ -82,6 +86,8 @@
           }
         }
       }
+      
+      b2cStorageService.save(GUN_KEY, myGuns);
     };
     
     svc.getDisplayableDPS = function(someGun){

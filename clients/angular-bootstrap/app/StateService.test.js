@@ -3,6 +3,11 @@ describe('State Service', function(){
   beforeEach(function(){
     module('Borderlands2Calc');
     
+    var storageStub = sinon.stub({
+      save: function(){},
+      get: function(){}
+    });
+    
     module(function($provide){
       $provide.value('b2cGunService', {
         getDefaults: function(success, error){
@@ -13,7 +18,11 @@ describe('State Service', function(){
           });
         }
       });
+      
+      $provide.value('b2cStorageService', storageStub);
     });
+    
+    storageStub.get.returns([{type: 'Pistol', guns: []}]);
   });
 
   it('sets the default type', inject(function(b2cStateService){
